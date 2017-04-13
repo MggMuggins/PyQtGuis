@@ -21,7 +21,7 @@ class PriceFinder(QWidget):
         self.grid.addWidget(self.entry, 1, 1)
         
         self.outlabel.setText("Range:")
-        self.output.setText("0.0 - 0.0")
+        self.output.setText("0 - 0")
         self.instruct.setText("Item Price:")
         self.entry.textChanged[str].connect(self.onChanged)
         
@@ -30,23 +30,25 @@ class PriceFinder(QWidget):
         self.show()
     
     def onChanged(self, price):
-        item = Item(price)
         if price != "":
-            self.output.setText(str(item.small) + " - " + str(item.large))
+            try:
+                price = float(price)
+            except ValueError:
+                self.output.setText("Only Input Numbers!")
+                print("[Error] Only input numbers!")
+                return
+            item = Item(price)
+            self.output.setText(str(int(item.small)) + " - " + str(int(item.large)))
             self.output.adjustSize()
         else:
-            self.output.setText("0.0 - 0.0")
+            self.output.setText("0 - 0")
             self.output.adjustSize()
 
 class Item():
     price = 0
     def __init__(self, price):
-        if price != "":
-            try:
-                self.price = float(price)
-            except ValueError:
-                print("[Error] Only input numbers!")
-            self.findRange()
+        self.price = price
+        self.findRange()
     
     def findRange(self):
         oddAverage = self.price / 2 + 0.5;
