@@ -16,6 +16,7 @@ class PyCalc(QWidget):
         super().__init__()
         self.calc = Calculator()
         self.disp = "0"
+        self.isClear = False
         self.initUI()
     
     def initUI(self):
@@ -52,49 +53,46 @@ class PyCalc(QWidget):
     
     # Construct a string that contains the correct digits
     def onNumberClick(self):
-        if self.disp == "0":
+        self.isClear = False
+        if self.disp == "0" or self.calc.isNew == True:
             self.disp = self.sender().text()
+            self.calc.isNew = False
         else:
             self.disp += self.sender().text()
         
         self.output.setText(self.disp)
     
-    
+    # Tell calc that it has an operation to do
     def onOperatorClick(self):
-        text = self.sender().text()
-        disp = int(self.disp)
-        if self.calc.stand == 0:
-            pass
-        else:
-            if text == '+':
-                self.calc.addVal(disp)
-            elif text == '-':
-                self.calc.subVal(disp)
-            elif text == '*':
-                self.calc.multVal(disp)
-            elif text == '/':
-                self.calc.divVal(disp)
+        # Self prep
+        self.isClear = False
+        oprtor = self.sender().text()
+        # Calc prep
+        self.calc.stand = int(self.disp)
+        self.calc.oprtor = oprtor
+        self.calc.isNew = True
+        # Calc action
+        self.calc.completeOprtn()
     
     # Clear the display string and update the label
+    # If clear is pressed again, clear everything out of everythin
     def onClrClick(self):
         self.disp = "0"
         self.output.setText(self.disp)
+        if self.isClear == True:
+            self.calc.stand = 0
+            self.calc.isNew = False
+        self.isClear = True
 
 class Calculator():
     def __init__(self):
         self.stand = 0
+        self.isNew = False
+        self.oprtor = None
     
-    def addVal(self, value):
-        self.stand += value
-    
-    def subVal(self, value):
-        self.stand -= value
-    
-    def multVal(self, value):
-        self.stand *= value
-    
-    def divVal(self, value):
-        self.stand /= value
+    def completeOprtn(self):
+        if self.oprtor != None:
+            
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
