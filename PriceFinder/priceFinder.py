@@ -25,12 +25,14 @@ class PriceFinder(QWidget):
         self.instruct.setText("Item Price:")
         self.entry.textChanged[str].connect(self.onChanged)
         
-        self.setGeometry(0, 0, 300, 100)
+        self.resize(300, 100)
         self.setWindowTitle('LOTR Trading Price Finder')
         self.show()
     
     def onChanged(self, price):
         if price != "":
+            if price[len(price) - 1] == '.':
+                return
             try:
                 price = float(price)
             except ValueError:
@@ -38,7 +40,7 @@ class PriceFinder(QWidget):
                 print("[Error] Only input numbers!")
                 return
             item = Item(price)
-            self.output.setText(str(int(item.small)) + " - " + str(int(item.large)))
+            self.output.setText(item.small + " - " + item.large)
             self.output.adjustSize()
         else:
             self.output.setText("0 - 0")
@@ -49,6 +51,7 @@ class Item():
     def __init__(self, price):
         self.price = price
         self.findRange()
+        self.toString()
     
     def findRange(self):
         oddAverage = self.price / 2 + 0.5;
@@ -73,6 +76,10 @@ class Item():
                 diff = oddAverage / 2
                 self.large = self.price + diff
                 self.small = self.price - diff
+    
+    def toString(self):
+        self.small = str(int(self.small))
+        self.large = str(int(self.large))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
