@@ -24,15 +24,14 @@ class PyCalc(QWidget):
         self.setLayout(grid)
         self.output = QLabel()
         self.output.setText("0")
-        grid.addWidget(self.output, 0, 0, 3, 1)
- 
+        
         names = ['Clr', '', '', '',
                  '7', '8', '9', '/',
                 '4', '5', '6', '*',
                  '1', '2', '3', '-',
                 '0', '.', '=', '+']
         
-        positions = [(i,j) for i in range(1, 6) for j in range(4)]
+        positions = [(i,j) for i in range(3, 8) for j in range(4)]
         
         for position, name in zip(positions, names):
             
@@ -47,6 +46,8 @@ class PyCalc(QWidget):
             elif name == "Clr":
                 button.clicked.connect(self.onClrClick)
             grid.addWidget(button, *position)
+        
+        grid.addWidget(self.output, 0, 0, 3, 1)
         
         self.setWindowTitle('PyCalc')
         self.show()
@@ -68,11 +69,14 @@ class PyCalc(QWidget):
         self.isClear = False
         oprtor = self.sender().text()
         # Calc prep
-        self.calc.stand = int(self.disp)
         self.calc.oprtor = oprtor
         self.calc.isNew = True
-        # Calc action
-        self.calc.completeOprtn()
+        if self.calc.stand == 0:
+            self.calc.stand = float(self.disp)
+        else:
+            self.calc.completeOprtn(float(self.disp))
+        # Output
+        self.output.setText(str(self.calc.stand))
     
     # Clear the display string and update the label
     # If clear is pressed again, clear everything out of everythin
@@ -90,9 +94,18 @@ class Calculator():
         self.isNew = False
         self.oprtor = None
     
-    def completeOprtn(self):
-        if self.oprtor != None:
-            
+    def completeOprtn(self, value):
+        #if self.oprtor != None:
+            if self.oprtor == "+":
+                self.stand += value
+            elif self.oprtor == "-":
+                self.stand -= value
+            elif self.oprtor == "*":
+                self.stand *= value
+            elif self.oprtor == "/":
+                self.stand /= value
+            elif self.oprtor == "=":
+                pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
