@@ -1,5 +1,4 @@
 import sys
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QLineEdit, QGridLayout
 
 class PriceFinder(QWidget):
@@ -54,16 +53,16 @@ class Item():
         self.toString()
     
     def findRange(self):
-        oddAverage = self.price / 2 + 0.5;
+        oddAverage = self.price / 2 + 0.5
         if self.price % 2 == 0:
             if self.price % 4 == 0:
                 diff = self.price / 4
                 self.large = self.price + diff
                 self.small = self.price - diff
             else:
-                diff = self.price / 4 + 0.5;
+                diff = self.price / 4 + 0.5
                 self.large = self.price + diff
-                self.small = (self.price - diff) + 1;
+                self.small = (self.price - diff) + 1
                 if self.price == 2:
                     self.small -= 1
         else:
